@@ -1,31 +1,33 @@
-package com.lk.CurrencyAnalyzer.model;
+package com.lk.CurrencyAnalyzer.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import org.antlr.v4.runtime.misc.NotNull;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Getter
 @Entity
 @Table(name = "users")
 public class User {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @NotBlank(message = "Imię jest obowiązkowe")
+    @Setter @Getter
     private String firstName;
 
-    @NotBlank(message = "Nazwisko jest obowiązkowe")
+    @Setter @Getter
     private String lastName;
 
-    @NotBlank(message = "Proszę wprowadzić datę urodzenia")
+    @Setter @Getter
+    private String email;
+
+    @Setter @Getter
     private LocalDate dateOfBirth;
 
-    @NotBlank(message = "Hasło jest niezbędne")
+    @Setter @Getter
     private String password;
 
 
