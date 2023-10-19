@@ -4,42 +4,43 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.util.Date;
+import java.util.Set;
 
+@Getter
 @Entity
 @Table(name = "users")
 public class User {
 
-    @Getter
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Setter @Getter
+    @Setter @Column(nullable = false, unique = true)
+    private String userName;
+
+    @Setter
+    @Column(nullable = false)
     private String firstName;
 
-    @Setter @Getter
+    @Setter
+    @Column(nullable = false)
     private String lastName;
 
-    @Setter @Getter
+    @Setter
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Setter @Getter
-    private LocalDate dateOfBirth;
+    @Setter
+    private Date dateOfBirth;
 
-    @Setter @Getter
+    @Setter
+    @Column(nullable = false)
     private String password;
 
+    @Setter
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Role> roles;
 
-
-    // Hibernate expects entities to have a no-arg constructor,
-    // though it does not necessarily have to be public.
     public User() {}
-
-    public User(String firstName, String lastName, LocalDate dateOfBirth) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-    }
-
 }
