@@ -1,8 +1,10 @@
 package com.lk.CurrencyAnalyzer.controllers;
 
 import com.lk.CurrencyAnalyzer.dto.LoginDto;
+import com.lk.CurrencyAnalyzer.models.Currency;
 import com.lk.CurrencyAnalyzer.models.Role;
 import com.lk.CurrencyAnalyzer.models.User;
+import com.lk.CurrencyAnalyzer.repositories.CurrencyRepository;
 import com.lk.CurrencyAnalyzer.repositories.RoleRepository;
 import com.lk.CurrencyAnalyzer.repositories.UserRepository;
 import com.lk.CurrencyAnalyzer.dto.SignUpDto;
@@ -32,6 +34,8 @@ public class HomeController {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CurrencyRepository currencyRepository;
 
     @PostMapping("/login")
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
@@ -65,8 +69,11 @@ public class HomeController {
 
         Role roles = roleRepository.findByName("ROLE_USER").get();
         user.setRoles(Collections.singleton(roles));
-        userRepository.save(user);
 
+        Currency currency = currencyRepository.findByValue("CURRENCY_USD");
+        user.setCurrency(currency);
+
+        userRepository.save(user);
         return new ResponseEntity<>("User is registered successfully!", HttpStatus.OK);
     }
 }
