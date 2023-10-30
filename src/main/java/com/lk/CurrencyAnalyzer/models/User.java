@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+
 import java.util.Date;
 import java.util.Set;
 
@@ -41,6 +42,11 @@ public class User {
     @Setter
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
+
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "currency_id", referencedColumnName = "id")
+    private Currency currency;
 
     public User() {}
 }
