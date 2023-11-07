@@ -1,0 +1,16 @@
+.register-class {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: space-between;
+    min-height: 90vh;
+    flex-direction: column;
+    column-gap: 10px;
+    row-gap: 50px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}

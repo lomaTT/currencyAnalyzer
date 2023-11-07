@@ -1,52 +1,54 @@
 package com.lk.CurrencyAnalyzer.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 
-import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
+@Setter
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
+        })
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter @Column(nullable = false, unique = true)
-    private String userName;
+    @NotBlank
+    @Size(max = 20)
+    private String username;
 
-    @Setter
-    @Column(nullable = false)
-    private String firstName;
-
-    @Setter
-    @Column(nullable = false)
-    private String lastName;
-
-    @Setter
-    @Column(unique = true, nullable = false)
+    @NotBlank
+    @Size(max = 50)
+    @Email
     private String email;
 
-    @Setter
-    private Date dateOfBirth;
-
-    @Setter
-    @Column(nullable = false)
+    @NotBlank
+    @Size(max = 120)
     private String password;
 
-    @Setter
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    @Setter
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "currency_id", referencedColumnName = "id")
-    private Currency currency;
+    public User() {
+    }
 
-    public User() {}
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 }
