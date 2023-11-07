@@ -38,8 +38,6 @@ const Register = () => {
                     label="Name"
                     defaultValue=""
                     help-value="string"
-                    // error
-                    // helperText="Incorrect entry."
                 />
 
                 <TextField
@@ -51,22 +49,6 @@ const Register = () => {
                     // helperText="Incorrect entry."
                 />
             </div>
-
-            {/*<TextField*/}
-            {/*    // error*/}
-            {/*    id="outlined-multiline-flexible"*/}
-            {/*    label="Name"*/}
-            {/*    defaultValue=""*/}
-            {/*    // helperText="Incorrect entry."*/}
-            {/*/>*/}
-
-            {/*<TextField*/}
-            {/*    // error*/}
-            {/*    id="outlined-multiline-flexible"*/}
-            {/*    label="Surname"*/}
-            {/*    defaultValue=""*/}
-            {/*    // helperText="Incorrect entry."*/}
-            {/*/>*/}
 
             <div className="controls">
                 <Button

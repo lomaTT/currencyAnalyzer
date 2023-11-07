@@ -17,7 +17,7 @@ import theme from "../../public/help-js/palette";
 import {ThemeProvider} from "@mui/material/styles";
 import {Link} from "react-router-dom";
 
-const pages = [];
+const pages = ['1', '2', '3'];
 const isUserLoggedIn = false;
 
 const HeaderComponent = () => {
@@ -73,6 +73,16 @@ const HeaderComponent = () => {
                             >
                                 LOGO
                             </Typography>
+
+                            {/*<Button*/}
+                            {/*    sx={{display: 'block', my: '2', textTransform: 'none', textAlign: 'center', color: 'white'}}*/}
+                            {/*    component={Link}*/}
+                            {/*    to={"/"}*/}
+                            {/*    title={"LOGO"}*/}
+                            {/*>*/}
+                            {/*    <AdbIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>*/}
+                            {/*    LOGO*/}
+                            {/*</Button>*/}
 
                             <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                                 <IconButton
