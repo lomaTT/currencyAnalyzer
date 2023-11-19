@@ -18,7 +18,7 @@ import {ThemeProvider} from "@mui/material/styles";
 import {Link, useLocation} from "react-router-dom";
 import {useAuth} from "../../providers/auth-provider";
 
-const pages = ['1', '2', '3'];
+const pages = ['currency-rates', '2', '3'];
 
 
 const HeaderComponent = ({}) => {
@@ -141,6 +141,8 @@ const HeaderComponent = ({}) => {
                                 {pages.map((page) => (
                                     <Button
                                         key={page}
+                                        component={Link}
+                                        to={page}
                                         onClick={handleCloseNavMenu}
                                         sx={{my: 2, color: 'white', display: 'block'}}
                                     >
