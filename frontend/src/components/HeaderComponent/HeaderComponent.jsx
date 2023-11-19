@@ -15,23 +15,30 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import theme from "../../public/help-js/palette";
 import {ThemeProvider} from "@mui/material/styles";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
+import {useAuth} from "../../providers/auth-provider";
 
 const pages = ['1', '2', '3'];
-const isUserLoggedIn = false;
 
-const HeaderComponent = () => {
+
+const HeaderComponent = ({}) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [settings, setSettings] = useState([]);
+    const { getUser, userIsAuthenticated, userLogout } = useAuth();
+
+
+    const currentPathName = useLocation().pathname;
 
     useEffect(() => {
-        if (!isUserLoggedIn) {
+
+        if (!userIsAuthenticated()) {
             setSettings(['Login', 'Register']);
         } else {
-            setSettings(['My profile', 'Dashboard', 'Settings', 'Logout']);
+            setSettings(['Profile', 'Dashboard', 'Settings', 'Logout']);
         }
-    }, []);
+
+    }, [currentPathName]);
 
 
     const handleOpenNavMenu = (event) => {
@@ -74,15 +81,6 @@ const HeaderComponent = () => {
                                 LOGO
                             </Typography>
 
-                            {/*<Button*/}
-                            {/*    sx={{display: 'block', my: '2', textTransform: 'none', textAlign: 'center', color: 'white'}}*/}
-                            {/*    component={Link}*/}
-                            {/*    to={"/"}*/}
-                            {/*    title={"LOGO"}*/}
-                            {/*>*/}
-                            {/*    <AdbIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>*/}
-                            {/*    LOGO*/}
-                            {/*</Button>*/}
 
                             <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                                 <IconButton
@@ -151,7 +149,7 @@ const HeaderComponent = () => {
                                 ))}
                             </Box>
 
-                            {isUserLoggedIn ? (<Box sx={{flexGrow: 0}}>
+                            {userIsAuthenticated() ? (<Box sx={{flexGrow: 0}}>
 
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
@@ -175,11 +173,11 @@ const HeaderComponent = () => {
                                     open={Boolean(anchorElUser)}
                                     onClose={handleCloseUserMenu}
                                 >
-                                    {settings.map((setting) => (
-                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                            <Typography textAlign="center">{setting}</Typography>
-                                        </MenuItem>
-                                    ))}
+                                    {settings.map((setting) =>
+                                        (<MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                            <Link to={setting.toLowerCase()} className={"link"}>{setting}</Link>
+                                        </MenuItem>))
+                                    }
                                 </Menu>
                             </Box>) : (
                                 <div className="login-register-box">

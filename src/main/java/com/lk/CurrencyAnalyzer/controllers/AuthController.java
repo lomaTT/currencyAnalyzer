@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials="true")
@@ -67,7 +69,7 @@ public class AuthController {
                 .body(new UserInfoResponse(userDetails.getId(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
-                        roles));
+                        roles, jwtCookie.toString()));
     }
 
     @PostMapping("/signup")
@@ -79,6 +81,12 @@ public class AuthController {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
         }
+
+//        Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+//        Matcher mat = pattern.matcher(signUpRequest.getEmail());
+//        if (!mat.matches()) {
+//            return ResponseEntity.badRequest().body(new MessageResponse("Error: Please, provide valid email!"));
+//        }
 
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),

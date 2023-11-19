@@ -5,24 +5,42 @@ import {AccountCircle} from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import LockIcon from '@mui/icons-material/Lock';
 import Button from "@mui/material/Button";
-import {Navigate} from 'react-router-dom'
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {useAuth} from "../../providers/auth-provider";
 
-const logIn = async (username, password) => {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': "*" },
-        body: JSON.stringify({ username: username, password: password })
-    };
-    return await fetch('http://localhost:8080/api/login', requestOptions)
-        .then(response => response.json())
-}
-
-
-const Login = () => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+const Login = ({}) => {
+    const Auth = useAuth();
+    const navigate = useNavigate();
     const [rememberMe, setRememberMe] = useState(false);
-    const [correctCredentials, setCorrectCredentials] = useState({});
+    const [correctCredentials, setCorrectCredentials] = useState();
+
+    const [data, setData] = useState({
+        username: '',
+        password: '',
+    });
+
+    const handleSetData = (e) => {
+        setData((prevData) => ({ ...prevData, [e.target.id]: e.target.value }));
+    }
+
+    const handleLogin = async () => {
+        axios.post('http://localhost:8080/api/auth/signin', data, {withCredentials: true})
+            .then((response) => {
+                setCorrectCredentials(true);
+
+                const { id, username, roles, email } = response.data;
+                const authData = window.btoa(data.username + ':' + data.password)
+                const authenticatedUser = { id, username, roles, email, authData }
+
+                setTimeout(() => {
+                    Auth.userLogin(authenticatedUser);
+                    navigate('/dashboard');
+                }, 5000);
+            }).catch((error) => {
+            setCorrectCredentials(false);
+        })
+    }
 
     return (
         <div className="login">
@@ -31,22 +49,22 @@ const Login = () => {
             <Box sx={{ display: 'flex', alignItems: 'flex-end', mt: '10px' }}>
                 <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                 <TextField
-                    id="login-textfield"
+                    id="username"
                     label="Username"
                     variant={"standard"}
-                    value={username}
-                    onChange={(event) => {setUsername(event.target.value);}}
+                    value={data.username}
+                    onChange={handleSetData}
                 />
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'flex-end', mt: '10px' }}>
                 <LockIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
                 <TextField
-                    id="password-textfield"
+                    id="password"
                     label="Password"
                     variant={"standard"}
-                    value={password}
-                    onChange={(event) => {setPassword(event.target.value);}}
+                    value={data.password}
+                    onChange={handleSetData}
                 />
             </Box>
 
@@ -58,12 +76,15 @@ const Login = () => {
             </div>
 
             <Button variant="outlined"
-                    onClick={() => logIn(username, password).then(r => setCorrectCredentials(r))}
+                    onClick={handleLogin}
             >Log in</Button>
             <div className="login-error">
-                {(correctCredentials.status === "incorrectCredentials") ?
-                    <Alert severity="error">Please, provide correct credentials!</Alert> : ""}
-                {(correctCredentials.status === "ok") ? <Navigate to='/home' /> : ""}
+                {(correctCredentials === false) ?
+                    <Alert severity="error">Please, provide correct credentials!</Alert>
+                    : (correctCredentials === true) ?
+                        <Alert severity="success">You successfully logged in. Redirecting....</Alert>
+                            : <Alert severity="info">Provide your credentials.</Alert>
+                        }
 
             </div>
         </div>
