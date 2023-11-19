@@ -2,71 +2,71 @@ import React, {useState} from 'react';
 import {Step, StepLabel, Stepper, TextField} from "@mui/material";
 import "./Register.css"
 import Button from "@mui/material/Button";
+import axios from "axios";
 
 const steps = ['Input your name and surname', 'Input your credentials and date of birth']
 
 const Register = () => {
-    const [activeStep, setActiveStep] = useState(0);
+    const [data, setData] = useState({
+        username: '',
+        email: '',
+        password: '',
+    });
 
-    const handleNext = () => {
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    const handleSetData = (e) => {
+        setData((prevData) => ({ ...prevData, [e.target.id]: e.target.value }));
     }
 
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    const handleRegister = async () => {
+        await axios.post('http://localhost:8080/api/auth/signup', data)
+            .then((response) => {
+                console.log(response);
+            })
     }
 
 
     return (
         <div className={"register-class"}>
-            <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => {
-                    const stepProps = {};
-                    const labelProps = {};
-                    return (
-                        <Step key={label} {...stepProps}>
-                            <StepLabel {...labelProps}>{label}</StepLabel>
-                        </Step>
-                    );
-                })}
-            </Stepper>
 
             <div className="input-group">
                 <TextField
-                    id="outlined-multiline-flexible"
-                    label="Name"
+                    id="username"
+                    label="Username"
                     defaultValue=""
                     help-value="string"
+                    onChange={handleSetData}
                 />
 
                 <TextField
-                    id="outlined-multiline-flexible"
-                    label="Surname"
+                    id="email"
+                    label="Email"
                     defaultValue=""
                     help-value="string"
+                    onChange={handleSetData}
+                    // error
+                    // helperText="Incorrect entry."
+                />
+
+                <TextField
+                    id="password"
+                    label="Password"
+                    defaultValue=""
+                    help-value="string"
+                    type="password"
+                    onChange={handleSetData}
                     // error
                     // helperText="Incorrect entry."
                 />
             </div>
 
             <div className="controls">
-                <Button
-                    color="inherit"
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    sx={{mr: 1}}
-                >
-                    Back
-                </Button>
 
                 <Button
                     color="inherit"
-                    disabled={activeStep === steps.length - 1}
-                    onClick={handleNext}
+                    onClick={handleRegister}
                     sx={{mr: 1}}
                 >
-                    Next
+                    Register
                 </Button>
             </div>
 
