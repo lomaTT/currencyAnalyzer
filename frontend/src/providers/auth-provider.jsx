@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, {createContext, useContext, useEffect, useState} from 'react'
 
 const AuthContext = createContext()
 
-function AuthProvider({ children }) {
+function AuthProvider({children}) {
     const [user, setUser] = useState(null)
 
     useEffect(() => {
@@ -11,6 +11,7 @@ function AuthProvider({ children }) {
     }, [])
 
     const getUser = () => {
+        // console.log(user);
         return JSON.parse(localStorage.getItem('user'))
     }
 
@@ -19,7 +20,6 @@ function AuthProvider({ children }) {
     }
 
     const userLogin = user => {
-        console.log(JSON.stringify(user));
         localStorage.setItem('user', JSON.stringify(user))
         setUser(user)
     }
@@ -29,12 +29,44 @@ function AuthProvider({ children }) {
         setUser(null)
     }
 
+    const userCheck = () => {
+        if (typeof localStorage.getItem('user') !== null && localStorage.getItem('user') !== null) {
+            const userDataSession = JSON.parse(localStorage.getItem('user'));
+            let convertedUserData = []
+            try {
+                convertedUserData = (window.atob(JSON.parse(localStorage.getItem('user')).authData).split(':'));
+            } catch (e) {
+                setUser(null);
+                localStorage.removeItem('user')
+                return false;
+            }
+            
+            if (typeof userDataSession !== null && convertedUserData !== null) {
+
+                if (String(userDataSession['id']) === convertedUserData[0]
+                    && userDataSession['username'] === convertedUserData[1]) {
+                    return true;
+                } else {
+                    localStorage.removeItem('user')
+                    return false;
+                }
+            } else {
+                localStorage.removeItem('user')
+                return false;
+            }
+        } else {
+            localStorage.removeItem('user')
+            return false;
+        }
+    }
+
     const contextValue = {
         user,
         getUser,
         userIsAuthenticated,
         userLogin,
         userLogout,
+        userCheck
     }
 
     return (
@@ -50,4 +82,4 @@ export function useAuth() {
     return useContext(AuthContext)
 }
 
-export { AuthProvider }
+export {AuthProvider}

@@ -9,6 +9,7 @@ import Dashboard from "./routes/Dashboard/Dashboard";
 import {AuthProvider} from "./providers/auth-provider";
 import Logout from "./routes/Logout/Logout";
 import Profile from "./routes/Profile/Profile";
+import CurrencyRates from "./routes/CurrencyRates/CurrencyRates";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
                             <Route path="/dashboard" element={<Dashboard/>}/>
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/logout" element={<Logout/>}/>
+                            <Route path="/currency-rates" element={<CurrencyRates />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>

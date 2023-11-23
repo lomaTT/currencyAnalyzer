@@ -18,7 +18,7 @@ import {ThemeProvider} from "@mui/material/styles";
 import {Link, useLocation} from "react-router-dom";
 import {useAuth} from "../../providers/auth-provider";
 
-const pages = ['1', '2', '3'];
+const pages = ['currency-rates', '2', '3'];
 
 
 const HeaderComponent = ({}) => {
@@ -26,16 +26,17 @@ const HeaderComponent = ({}) => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [settings, setSettings] = useState([]);
     const { getUser, userIsAuthenticated, userLogout } = useAuth();
+    const Auth = useAuth();
 
 
     const currentPathName = useLocation().pathname;
 
     useEffect(() => {
 
-        if (!userIsAuthenticated()) {
-            setSettings(['Login', 'Register']);
-        } else {
+        if (userIsAuthenticated() && Auth.userCheck()) {
             setSettings(['Profile', 'Dashboard', 'Settings', 'Logout']);
+        } else {
+            setSettings(['Login', 'Register']);
         }
 
     }, [currentPathName]);
@@ -141,6 +142,8 @@ const HeaderComponent = ({}) => {
                                 {pages.map((page) => (
                                     <Button
                                         key={page}
+                                        component={Link}
+                                        to={page}
                                         onClick={handleCloseNavMenu}
                                         sx={{my: 2, color: 'white', display: 'block'}}
                                     >
@@ -149,7 +152,7 @@ const HeaderComponent = ({}) => {
                                 ))}
                             </Box>
 
-                            {userIsAuthenticated() ? (<Box sx={{flexGrow: 0}}>
+                            {(userIsAuthenticated() && Auth.userCheck()) ? (<Box sx={{flexGrow: 0}}>
 
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
