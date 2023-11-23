@@ -1,12 +1,12 @@
 import "./Login.css";
 import {Alert, Checkbox, TextField} from "@mui/material";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {AccountCircle} from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import LockIcon from '@mui/icons-material/Lock';
 import Button from "@mui/material/Button";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../providers/auth-provider";
 
 const Login = ({}) => {
@@ -30,7 +30,7 @@ const Login = ({}) => {
                 setCorrectCredentials(true);
 
                 const { id, username, roles, email } = response.data;
-                const authData = window.btoa(data.username + ':' + data.password)
+                const authData = window.btoa(id + ':' + data.username + ':' + data.password)
                 const authenticatedUser = { id, username, roles, email, authData }
 
                 setTimeout(() => {

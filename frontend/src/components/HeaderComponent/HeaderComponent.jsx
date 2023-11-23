@@ -26,16 +26,17 @@ const HeaderComponent = ({}) => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [settings, setSettings] = useState([]);
     const { getUser, userIsAuthenticated, userLogout } = useAuth();
+    const Auth = useAuth();
 
 
     const currentPathName = useLocation().pathname;
 
     useEffect(() => {
 
-        if (!userIsAuthenticated()) {
-            setSettings(['Login', 'Register']);
-        } else {
+        if (userIsAuthenticated() && Auth.userCheck()) {
             setSettings(['Profile', 'Dashboard', 'Settings', 'Logout']);
+        } else {
+            setSettings(['Login', 'Register']);
         }
 
     }, [currentPathName]);
@@ -151,7 +152,7 @@ const HeaderComponent = ({}) => {
                                 ))}
                             </Box>
 
-                            {userIsAuthenticated() ? (<Box sx={{flexGrow: 0}}>
+                            {(userIsAuthenticated() && Auth.userCheck()) ? (<Box sx={{flexGrow: 0}}>
 
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>

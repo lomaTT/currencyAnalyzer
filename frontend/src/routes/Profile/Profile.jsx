@@ -1,14 +1,23 @@
 import React from 'react';
 import {useAuth} from "../../providers/auth-provider";
+import {Link, Navigate} from "react-router-dom";
+import Button from "@mui/material/Button";
+import RedirectProvider from "../../providers/redirect-provider";
 
 const Profile = () => {
-    const Auth = useAuth()
-    const user = Auth.getUser()
-    const isUser = user.roles
+    const Auth = useAuth();
 
     return (
         <div>
-            Profile component!
+            <RedirectProvider />
+            <div className="main-description">
+                Your profile
+                <div>
+                    <Button variant="contained" component={Link} to={"/profile/buy-currency"}>Buy currency</Button>
+                </div>
+                {/* Table of currencies */}
+
+            </div>
         </div>
     );
 };

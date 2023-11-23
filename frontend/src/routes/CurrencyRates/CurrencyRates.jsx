@@ -12,6 +12,7 @@ import {
     TableHead,
     TableRow
 } from "@mui/material";
+import "./CurrencyRates.css";
 
 function createData(name, value) {
     return { name, value };
@@ -61,9 +62,7 @@ const CurrencyRates = () => {
 
     return (
         <div>
-            {/*{Object.keys(currencies).map((value) => (<>{value}  {currencies[value]} <br /> </>))}*/}
-
-            <div>
+            <div className="form-control">
                 <FormControl sx={{ m: 1, width: 300 }}>
                     <InputLabel id="demo-multiple-name-label">Name</InputLabel>
                     <Select
@@ -88,7 +87,7 @@ const CurrencyRates = () => {
 
 
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <Table sx={{ minWidth: 650, maxWidth: 900, margin: "0 auto" }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell>Name of the currency</TableCell>
