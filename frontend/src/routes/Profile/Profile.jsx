@@ -13,7 +13,7 @@ const Profile = () => {
             <div className="main-description">
                 Your profile
                 <div>
-                    <Button variant="contained" component={Link} to={"/profile/buy-currency"}>Buy currency</Button>
+                    <Button variant="contained" component={Link} to={"/profile/add-currency"}>Add currency</Button>
                 </div>
                 {/* Table of currencies */}
 
