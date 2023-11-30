@@ -3,12 +3,15 @@ package com.lk.CurrencyAnalyzer.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
+import com.lk.CurrencyAnalyzer.enums.ECurrency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials="true")
 @RestController
@@ -63,6 +66,16 @@ public class CurrencyController {
 
             return jNode.put("STATUS", "404");
         }
+    }
+
+    @GetMapping("/get-list-of-currencies")
+    private String getListOfCurrencies() {
+        ArrayList<String> currenciesArrayToJson = new ArrayList<>();
+        ECurrency[] currencies = ECurrency.class.getEnumConstants();
+        for (ECurrency currency: currencies) {
+            currenciesArrayToJson.add(currency.toString());
+        }
+        return new Gson().toJson(currenciesArrayToJson);
     }
 
 }
