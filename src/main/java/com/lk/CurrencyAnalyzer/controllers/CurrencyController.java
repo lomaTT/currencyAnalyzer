@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials="true")
 @RestController
