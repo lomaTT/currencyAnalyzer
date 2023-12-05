@@ -9,6 +9,7 @@ import com.lk.CurrencyAnalyzer.models.Currency;
 import com.lk.CurrencyAnalyzer.models.User;
 import com.lk.CurrencyAnalyzer.models.UsersCurrencies;
 import com.lk.CurrencyAnalyzer.payload.request.AddCurrencyRequest;
+import com.lk.CurrencyAnalyzer.payload.request.DeleteCurrencyRequest;
 import com.lk.CurrencyAnalyzer.repositories.CurrencyRepository;
 import com.lk.CurrencyAnalyzer.repositories.UserRepository;
 import com.lk.CurrencyAnalyzer.repositories.UsersCurrenciesRepository;
@@ -146,6 +147,31 @@ public class CurrencyController {
         }
 
         return node;
+    }
+
+    @DeleteMapping("/delete-user-currency")
+    private JsonNode deleteUserCurrency(@Valid @RequestBody DeleteCurrencyRequest deleteCurrencyRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.createObjectNode();
+
+        Currency currency = currencyRepository.findByCurrency(deleteCurrencyRequest.getCurrency_id());
+
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User with such id not found!"));
+
+        if (usersCurrenciesRepository.getUsersCurrenciesByUserIsAndCurrency(user, currency).isPresent()) {
+            UsersCurrencies userCurrency = usersCurrenciesRepository.getUsersCurrenciesByUserIsAndCurrency(user, currency).orElseThrow(() -> new UsernameNotFoundException("Query not found."));
+            usersCurrenciesRepository.delete(userCurrency);
+            ((ObjectNode) node).put("status", "success");
+            return node;
+        } else {
+            ((ObjectNode) node).put("status", "abort");
+            ((ObjectNode) node).put("issue", "this user dont have this currency");
+            return node;
+        }
     }
 
 }
