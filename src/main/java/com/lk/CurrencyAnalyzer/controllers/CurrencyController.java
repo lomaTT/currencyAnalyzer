@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials="true")
 @RestController
@@ -126,6 +126,29 @@ public class CurrencyController {
         }
 
         return SecurityContextHolder.getContext().toString();
+    }
+
+    @GetMapping("/get-users-currencies")
+    private JsonNode getUsersCurrencies() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.createObjectNode();
+
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User with such id not found!"));
+
+        if (!usersCurrenciesRepository.findAllByUser(user).isEmpty()) {
+            List<UsersCurrencies> userCurrencies = usersCurrenciesRepository.findAllByUser(user);
+
+            for (UsersCurrencies userCurrency : usersCurrenciesRepository.findAllByUser(user)) {
+                ((ObjectNode) node).put(userCurrency.getCurrencyEnum().getCurrencyName().toString(), userCurrency.getValue());
+            }
+        }
+
+        return node;
+
     }
 
 }

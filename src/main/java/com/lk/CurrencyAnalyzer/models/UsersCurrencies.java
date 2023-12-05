@@ -21,6 +21,10 @@ public class UsersCurrencies {
 
     private Long value;
 
+    public Currency getCurrencyEnum() {
+        return this.currency;
+    }
+
     public UsersCurrencies(User user, Currency currency, Long value) {
         this.user = user;
         this.currency = currency;

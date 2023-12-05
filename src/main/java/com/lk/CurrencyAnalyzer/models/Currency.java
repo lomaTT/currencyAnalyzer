@@ -17,4 +17,8 @@ public class Currency {
     @Enumerated(EnumType.STRING)
     private ECurrency currency;
 
+    public ECurrency getCurrencyName() {
+        return this.currency;
+    }
+
 }
