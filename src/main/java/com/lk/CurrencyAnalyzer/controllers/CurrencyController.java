@@ -140,15 +140,12 @@ public class CurrencyController {
                 .orElseThrow(() -> new UsernameNotFoundException("User with such id not found!"));
 
         if (!usersCurrenciesRepository.findAllByUser(user).isEmpty()) {
-            List<UsersCurrencies> userCurrencies = usersCurrenciesRepository.findAllByUser(user);
-
             for (UsersCurrencies userCurrency : usersCurrenciesRepository.findAllByUser(user)) {
                 ((ObjectNode) node).put(userCurrency.getCurrencyEnum().getCurrencyName().toString(), userCurrency.getValue());
             }
         }
 
         return node;
-
     }
 
 }
