@@ -1,0 +1,12 @@
+.circleDiagram {
+    padding-top: 20px;
+    margin: 0 auto;
+    width: 50%;
+}
+
+.mainLayout {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-direction: column;
+}
