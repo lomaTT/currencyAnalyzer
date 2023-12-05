@@ -4,7 +4,7 @@ import HomePage from "./routes/HomePage/HomePage";
 import Login from "./routes/Login/Login";
 import Layout from "./routes/Layout/Layout";
 import Register from "./routes/Register/Register";
-import React, {useState} from "react";
+import React from "react";
 import Dashboard from "./routes/Dashboard/Dashboard";
 import {AuthProvider} from "./providers/auth-provider";
 import Logout from "./routes/Logout/Logout";

@@ -1,5 +1,6 @@
 package com.lk.CurrencyAnalyzer.models;
 
+import com.lk.CurrencyAnalyzer.enums.ECurrency;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ public class Currency {
     private Long id;
 
     @Setter
-    private String value;
+    @Enumerated(EnumType.STRING)
+    private ECurrency currency;
 
 }

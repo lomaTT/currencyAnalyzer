@@ -4,7 +4,7 @@ import axios from "axios";
 
 const AddCurrency = () => {
     useEffect(() => {
-        axios.get('http://localhost:8080/api/currency/get-list-of-currencies')
+        axios.get('http://localhost:8080/api/currency/add-currency-to-currencies-list')
             .then((response) => console.log(response.data))
             .catch((error) => console.log(error));
     }, []);

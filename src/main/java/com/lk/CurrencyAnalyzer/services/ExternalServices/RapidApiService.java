@@ -13,7 +13,7 @@ public class RapidApiService {
 
     @SneakyThrows
     public static void currenciesList() {
-        com.mashape.unirest.http.HttpResponse<String> response = (com.mashape.unirest.http.HttpResponse<String>) Unirest.get("https://currency-exchange.p.rapidapi.com/listquotes")
+        com.mashape.unirest.http.HttpResponse<String> response = Unirest.get("https://currency-exchange.p.rapidapi.com/listquotes")
                 .header("X-RapidAPI-Key", "ec5de6e537msh1b66a4c5b439ac3p133e95jsnad0aebd13847")
                 .header("X-RapidAPI-Host", "currency-exchange.p.rapidapi.com")
                 .asString();

@@ -80,12 +80,6 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
         }
 
-//        Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
-//        Matcher mat = pattern.matcher(signUpRequest.getEmail());
-//        if (!mat.matches()) {
-//            return ResponseEntity.badRequest().body(new MessageResponse("Error: Please, provide valid email!"));
-//        }
-
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),

@@ -5,8 +5,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.lk.CurrencyAnalyzer.enums.ECurrency;
+import com.lk.CurrencyAnalyzer.models.Currency;
+import com.lk.CurrencyAnalyzer.models.User;
+import com.lk.CurrencyAnalyzer.models.UsersCurrencies;
+import com.lk.CurrencyAnalyzer.payload.request.AddCurrencyRequest;
+import com.lk.CurrencyAnalyzer.repositories.CurrencyRepository;
+import com.lk.CurrencyAnalyzer.repositories.UserRepository;
+import com.lk.CurrencyAnalyzer.repositories.UsersCurrenciesRepository;
+import com.lk.CurrencyAnalyzer.security.services.UserDetailsImpl;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URL;
@@ -17,6 +32,17 @@ import java.util.ArrayList;
 @RestController
 @RequestMapping("/api/currency")
 public class CurrencyController {
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    CurrencyRepository currencyRepository;
+
+    @Autowired
+    UsersCurrenciesRepository usersCurrenciesRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(CurrencyController.class);
 
@@ -76,6 +102,30 @@ public class CurrencyController {
             currenciesArrayToJson.add(currency.toString());
         }
         return new Gson().toJson(currenciesArrayToJson);
+    }
+
+    @PostMapping("/add-currency-to-currencies-list")
+    private String addCurrencyToCurrenciesList(@Valid @RequestBody AddCurrencyRequest addCurrencyRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        Currency currency = currencyRepository.findByCurrency(addCurrencyRequest.getCurrency_id());
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User with id " + userDetails.getId() + " not found"));
+
+        if (usersCurrenciesRepository.getUsersCurrenciesByCurrencyAndUser(currency, user).isPresent()) {
+            UsersCurrencies userCurrency = usersCurrenciesRepository.getUsersCurrenciesByCurrencyAndUser(currency, user).orElseThrow(() -> new UsernameNotFoundException("Query not found."));
+            userCurrency.setValue(userCurrency.getValue() + addCurrencyRequest.getValue());
+            usersCurrenciesRepository.save(userCurrency);
+        } else {
+            UsersCurrencies usersCurrencies = new UsersCurrencies(
+                    user, currency, addCurrencyRequest.getValue()
+            );
+
+            usersCurrenciesRepository.save(usersCurrencies);
+        }
+
+        return SecurityContextHolder.getContext().toString();
     }
 
 }
