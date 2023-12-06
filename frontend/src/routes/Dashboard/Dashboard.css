@@ -1,7 +1,8 @@
 .circleDiagram {
     padding-top: 20px;
     margin: 0 auto;
-    width: 50%;
+    width: 20%;
+    padding-bottom: 20px;
 }
 
 .mainLayout {
@@ -9,4 +10,9 @@
     justify-items: center;
     align-items: center;
     flex-direction: column;
+}
+
+.diagram-info {
+    margin: 0 auto;
+    text-align: center;
 }
