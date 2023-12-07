@@ -16,6 +16,9 @@ i18n
                     CURRENCY_JPY: "Japanese yen",
                     CURRENCY_PLN: "Polish zloty",
                     CURRENCY_RUB: "Russian ruble",
+                    OPERATION_ADD: "Added (manually)",
+                    OPERATION_DELETE: "Deleted (manually)",
+
                 }
             },
             pl: {

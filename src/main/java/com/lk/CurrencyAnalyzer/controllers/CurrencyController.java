@@ -30,6 +30,7 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static com.lk.CurrencyAnalyzer.enums.EOperation.OPERATION_ADD;
 import static com.lk.CurrencyAnalyzer.enums.EOperation.OPERATION_DELETE;
@@ -191,6 +192,17 @@ public class CurrencyController {
             ((ObjectNode) node).put("issue", "this user dont have this currency");
             return node;
         }
+    }
+
+    @GetMapping("/get-last-user-transactions")
+    private List<Transaction> getLastUserTransaction() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User with such id not found!"));
+
+        return transactionRepository.getAllByUser(user);
     }
 
 }

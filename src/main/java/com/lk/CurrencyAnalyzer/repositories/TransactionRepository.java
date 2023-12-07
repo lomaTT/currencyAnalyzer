@@ -1,6 +1,11 @@
 package com.lk.CurrencyAnalyzer.repositories;
 
 import com.lk.CurrencyAnalyzer.models.Transaction;
+import com.lk.CurrencyAnalyzer.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TransactionRepository extends JpaRepository<Transaction, Long> {}
+import java.util.List;
+
+public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+    List<Transaction> getAllByUser(User user);
+}
