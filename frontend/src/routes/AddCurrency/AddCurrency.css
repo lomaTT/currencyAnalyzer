@@ -1,0 +1,18 @@
+.select-container {
+    width: 500px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.value-input {
+    padding-top: 10px;
+    margin: 0 auto;
+}
+
+.value-input > * {
+    width: 500px;
+}
+
+#currency-amount {
+    padding-top: 10px;
+}

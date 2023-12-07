@@ -11,9 +11,11 @@ import Logout from "./routes/Logout/Logout";
 import Profile from "./routes/Profile/Profile";
 import CurrencyRates from "./routes/CurrencyRates/CurrencyRates";
 import AddCurrency from "./routes/AddCurrency/AddCurrency";
+import {useTranslation} from "react-i18next";
 
 
 function App() {
+    const { t, i18n } = useTranslation();
     return (
         <>
             <AuthProvider>
