@@ -18,6 +18,7 @@ import {
     Button
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
+import {useTranslation} from "react-i18next";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -40,6 +41,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const Dashboard = () => {
+    const { t, i18n } = useTranslation();
     const [responseJson, setResponseJson] = useState([]);
     const [rerender, setRerender] = useState(false);
 
@@ -69,7 +71,7 @@ const Dashboard = () => {
     Chart.register(ArcElement, Tooltip, Legend);
 
     const data = {
-        labels: Object.entries(responseJson).map(item => item[0]),
+        labels: Object.entries(responseJson).map(item => t(item[0])),
         // datasets is an array of objects where each object represents a set of data to display corresponding to the labels above. for brevity, we'll keep it at one object
         datasets: [
             {
@@ -126,7 +128,7 @@ const Dashboard = () => {
                                 {rows.map((row) => (
                                     <StyledTableRow key={row.currency_name}>
                                         <StyledTableCell component="th" scope="row">
-                                            {row.currency_name}
+                                            {t(row.currency_name)}
                                         </StyledTableCell>
                                         <StyledTableCell align="right">{row.value}</StyledTableCell>
                                         <StyledTableCell align="right"><Button color="info" startIcon={<DeleteIcon />} onClick={() => handleDeleteCurrency(row.currency_name)}>Delete</Button></StyledTableCell>
