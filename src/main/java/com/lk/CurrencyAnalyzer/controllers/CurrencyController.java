@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.lk.CurrencyAnalyzer.enums.ECurrency;
 import com.lk.CurrencyAnalyzer.models.Currency;
+import com.lk.CurrencyAnalyzer.models.Transaction;
 import com.lk.CurrencyAnalyzer.models.User;
 import com.lk.CurrencyAnalyzer.models.UsersCurrencies;
 import com.lk.CurrencyAnalyzer.payload.request.AddCurrencyRequest;
 import com.lk.CurrencyAnalyzer.payload.request.DeleteCurrencyRequest;
 import com.lk.CurrencyAnalyzer.repositories.CurrencyRepository;
+import com.lk.CurrencyAnalyzer.repositories.TransactionRepository;
 import com.lk.CurrencyAnalyzer.repositories.UserRepository;
 import com.lk.CurrencyAnalyzer.repositories.UsersCurrenciesRepository;
 import com.lk.CurrencyAnalyzer.security.services.UserDetailsImpl;
@@ -27,6 +29,10 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
+
+import static com.lk.CurrencyAnalyzer.enums.EOperation.OPERATION_ADD;
+import static com.lk.CurrencyAnalyzer.enums.EOperation.OPERATION_DELETE;
 
 @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials="true")
 @RestController
@@ -43,6 +49,9 @@ public class CurrencyController {
 
     @Autowired
     UsersCurrenciesRepository usersCurrenciesRepository;
+
+    @Autowired
+    TransactionRepository transactionRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(CurrencyController.class);
 
@@ -125,6 +134,11 @@ public class CurrencyController {
             usersCurrenciesRepository.save(usersCurrencies);
         }
 
+        Date now = new Date();
+
+        Transaction transaction = new Transaction(now, user, currency, addCurrencyRequest.getValue(), OPERATION_ADD);
+        transactionRepository.save(transaction);
+
         return SecurityContextHolder.getContext().toString();
     }
 
@@ -153,6 +167,8 @@ public class CurrencyController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
+        Date now = new Date();
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.createObjectNode();
 
@@ -164,6 +180,10 @@ public class CurrencyController {
         if (usersCurrenciesRepository.getUsersCurrenciesByUserIsAndCurrency(user, currency).isPresent()) {
             UsersCurrencies userCurrency = usersCurrenciesRepository.getUsersCurrenciesByUserIsAndCurrency(user, currency).orElseThrow(() -> new UsernameNotFoundException("Query not found."));
             usersCurrenciesRepository.delete(userCurrency);
+
+            Transaction transaction = new Transaction(now, user, currency, userCurrency.getValue(), OPERATION_DELETE);
+            transactionRepository.save(transaction);
+
             ((ObjectNode) node).put("status", "success");
             return node;
         } else {
