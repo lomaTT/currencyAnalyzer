@@ -19,13 +19,13 @@ public class UsersCurrencies {
     @ManyToOne
     private Currency currency;
 
-    private Long value;
+    private Double value;
 
     public Currency getCurrencyEnum() {
         return this.currency;
     }
 
-    public UsersCurrencies(User user, Currency currency, Long value) {
+    public UsersCurrencies(User user, Currency currency, Double value) {
         this.user = user;
         this.currency = currency;
         this.value = value;

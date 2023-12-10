@@ -11,6 +11,7 @@ import com.lk.CurrencyAnalyzer.models.User;
 import com.lk.CurrencyAnalyzer.models.UsersCurrencies;
 import com.lk.CurrencyAnalyzer.payload.request.AddCurrencyRequest;
 import com.lk.CurrencyAnalyzer.payload.request.DeleteCurrencyRequest;
+import com.lk.CurrencyAnalyzer.payload.request.TradeCurrencyRequest;
 import com.lk.CurrencyAnalyzer.repositories.CurrencyRepository;
 import com.lk.CurrencyAnalyzer.repositories.TransactionRepository;
 import com.lk.CurrencyAnalyzer.repositories.UserRepository;
@@ -26,16 +27,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.lk.CurrencyAnalyzer.enums.EOperation.OPERATION_ADD;
-import static com.lk.CurrencyAnalyzer.enums.EOperation.OPERATION_DELETE;
+import static com.lk.CurrencyAnalyzer.enums.EOperation.*;
 
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials="true")
+@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/currency")
 public class CurrencyController {
@@ -65,7 +67,7 @@ public class CurrencyController {
         try {
             URL url = new URL(result);
             JsonNode root = objectMapper.readTree(url);
-            ((ObjectNode)root.get("data")).put("STATUS", "200");
+            ((ObjectNode) root.get("data")).put("STATUS", "200");
 
             return root.get("data");
         } catch (Exception e) {
@@ -88,7 +90,7 @@ public class CurrencyController {
 
             ObjectNode parsedValues = objectMapper.createObjectNode();
 
-            for (JsonNode node: root.get("data")) {
+            for (JsonNode node : root.get("data")) {
                 parsedValues.put(String.valueOf(node.get("name")).replaceAll("\"", ""), node.get("code"));
             }
 
@@ -108,14 +110,14 @@ public class CurrencyController {
     private String getListOfCurrencies() {
         ArrayList<String> currenciesArrayToJson = new ArrayList<>();
         ECurrency[] currencies = ECurrency.class.getEnumConstants();
-        for (ECurrency currency: currencies) {
+        for (ECurrency currency : currencies) {
             currenciesArrayToJson.add(currency.toString());
         }
         return new Gson().toJson(currenciesArrayToJson);
     }
 
     @PostMapping("/add-currency-to-currencies-list")
-    private String addCurrencyToCurrenciesList(@Valid @RequestBody AddCurrencyRequest addCurrencyRequest) {
+    private JsonNode addCurrencyToCurrenciesList(@Valid @RequestBody AddCurrencyRequest addCurrencyRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -137,10 +139,17 @@ public class CurrencyController {
 
         Date now = new Date();
 
-        Transaction transaction = new Transaction(now, user, currency, addCurrencyRequest.getValue(), OPERATION_ADD);
+        Transaction transaction = new Transaction(now, user, currency, null, addCurrencyRequest.getValue(), OPERATION_ADD);
         transactionRepository.save(transaction);
+        logger.info("User with id " + userDetails.getId() + " made new transaction "
+                + OPERATION_ADD + " with value: " + addCurrencyRequest.getValue()
+                + ", currency: " + currency.getCurrency().toString());
 
-        return SecurityContextHolder.getContext().toString();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.createObjectNode();
+        ((ObjectNode) node).put("status", "success");
+
+        return node;
     }
 
     @GetMapping("/get-users-currencies")
@@ -182,8 +191,12 @@ public class CurrencyController {
             UsersCurrencies userCurrency = usersCurrenciesRepository.getUsersCurrenciesByUserIsAndCurrency(user, currency).orElseThrow(() -> new UsernameNotFoundException("Query not found."));
             usersCurrenciesRepository.delete(userCurrency);
 
-            Transaction transaction = new Transaction(now, user, currency, userCurrency.getValue(), OPERATION_DELETE);
+            Transaction transaction = new Transaction(now, user, currency, null, userCurrency.getValue(), OPERATION_DELETE);
             transactionRepository.save(transaction);
+
+            logger.info("User with id " + userDetails.getId() + " made new transaction "
+                    + OPERATION_DELETE + " with value: " + userCurrency.getValue()
+                    + ", currency: " + currency.getCurrency().toString());
 
             ((ObjectNode) node).put("status", "success");
             return node;
@@ -203,6 +216,61 @@ public class CurrencyController {
                 .orElseThrow(() -> new UsernameNotFoundException("User with such id not found!"));
 
         return transactionRepository.getAllByUser(user);
+    }
+
+    @PostMapping("/trade-currency")
+    private String tradeCurrency(@Valid @RequestBody TradeCurrencyRequest tradeCurrencyRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+        Date now = new Date();
+
+        User user = userRepository.findById(userDetails.getId())
+                .orElseThrow(() -> new UsernameNotFoundException("User with such id not found!"));
+
+        Currency existingCurrency = currencyRepository.findByCurrency(tradeCurrencyRequest.getExistingCurrency());
+        Currency wantedCurrency = currencyRepository.findByCurrency(tradeCurrencyRequest.getWantedCurrency());
+
+        if (usersCurrenciesRepository.getUsersCurrenciesByUserIsAndCurrency(user, existingCurrency).isPresent()) {
+            UsersCurrencies userCurrency = usersCurrenciesRepository.getUsersCurrenciesByUserIsAndCurrency(user, existingCurrency).orElseThrow(() -> new UsernameNotFoundException("Query not found."));
+
+            if (userCurrency.getValue() < tradeCurrencyRequest.getValue()) {
+                return "no such amount of value";
+            }
+
+            if (userCurrency.getValue() - tradeCurrencyRequest.getValue() != 0) {
+                userCurrency.setValue(userCurrency.getValue() - tradeCurrencyRequest.getValue());
+                usersCurrenciesRepository.save(userCurrency);
+            } else {
+                usersCurrenciesRepository.delete(userCurrency);
+            }
+
+        } else {
+            return "user dont have such currency";
+        }
+
+        if (usersCurrenciesRepository.getUsersCurrenciesByUserIsAndCurrency(user, wantedCurrency).isPresent()) {
+            UsersCurrencies userCurrency = usersCurrenciesRepository.getUsersCurrenciesByUserIsAndCurrency(user, wantedCurrency).orElseThrow(() -> new UsernameNotFoundException("Query not found."));
+            userCurrency.setValue(userCurrency.getValue() + Double.parseDouble((decimalFormat.format(tradeCurrencyRequest.getValue() * tradeCurrencyRequest.getRate())).replaceAll(",", ".")));
+            usersCurrenciesRepository.save(userCurrency);
+        } else {
+            UsersCurrencies usersCurrencies = new UsersCurrencies(
+                    user, wantedCurrency, Double.parseDouble((decimalFormat.format(tradeCurrencyRequest.getValue() * tradeCurrencyRequest.getRate())).replaceAll(",", "."))
+            );
+            usersCurrenciesRepository.save(usersCurrencies);
+        }
+
+        Transaction transaction = new Transaction(now, user, existingCurrency, wantedCurrency, tradeCurrencyRequest.getValue(), OPERATION_CONVERT);
+        transactionRepository.save(transaction);
+
+        logger.info("User with id " + userDetails.getId() + " made new transaction "
+                + OPERATION_CONVERT + " from currency: " + tradeCurrencyRequest.getExistingCurrency().toString()
+                + " to currency: " + tradeCurrencyRequest.getWantedCurrency().toString()
+                + ", value: " + tradeCurrencyRequest.getValue());
+
+        return "";
     }
 
 }

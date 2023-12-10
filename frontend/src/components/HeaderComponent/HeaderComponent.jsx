@@ -34,7 +34,7 @@ const HeaderComponent = ({}) => {
     useEffect(() => {
 
         if (userIsAuthenticated() && Auth.userCheck()) {
-            setSettings(['Profile', 'Dashboard', 'Settings', 'Logout']);
+            setSettings(['Profile', 'Dashboard', 'Trade', 'Logout']);
         } else {
             setSettings(['Login', 'Register']);
         }

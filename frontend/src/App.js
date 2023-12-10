@@ -11,6 +11,8 @@ import Logout from "./routes/Logout/Logout";
 import Profile from "./routes/Profile/Profile";
 import CurrencyRates from "./routes/CurrencyRates/CurrencyRates";
 import AddCurrency from "./routes/AddCurrency/AddCurrency";
+import Trade from "./routes/Trade/Trade";
+
 import {useTranslation} from "react-i18next";
 
 
@@ -30,6 +32,7 @@ function App() {
                             <Route path="/logout" element={<Logout/>}/>
                             <Route path="/currency-rates" element={<CurrencyRates />} />
                             <Route path="/profile/add-currency" element={<AddCurrency />} />
+                            <Route path="/trade" element={<Trade />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>

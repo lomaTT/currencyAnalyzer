@@ -17,8 +17,6 @@ const currenciesMap = {
     'CURRENCY_GBP': '£',
     'CURRENCY_CNY': '¥ (CNY)',
     'CURRENCY_JPY': '¥ (JPY)',
-
-
 }
 
 const AddCurrency = () => {
@@ -49,10 +47,9 @@ const AddCurrency = () => {
 
     const handleAddCurrency = () => {
         console.log(currency, value);
-        if (currency === '' || value === '') {
+        if (currency === '' || value.toString() === '') {
             return;
         }
-
 
         axios.post('http://localhost:8080/api/currency/add-currency-to-currencies-list', {
                 "currency_id": currency,

@@ -26,7 +26,10 @@ public class Transaction {
     @ManyToOne
     private Currency currency;
 
-    private Long value;
+    @ManyToOne
+    private Currency received_currency;
+
+    private Double value;
 
     @Enumerated(EnumType.STRING)
     private EOperation operation;
@@ -35,10 +38,11 @@ public class Transaction {
         return this.currency;
     }
 
-    public Transaction(Date transaction_time, User user, Currency currency, Long value, EOperation operation) {
+    public Transaction(Date transaction_time, User user, Currency currency, Currency received_currency, Double value, EOperation operation) {
         this.transaction_time = transaction_time;
         this.user = user;
         this.currency = currency;
+        this.received_currency = received_currency;
         this.value = value;
         this.operation = operation;
     }
