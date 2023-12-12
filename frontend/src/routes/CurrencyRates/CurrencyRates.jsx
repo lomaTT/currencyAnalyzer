@@ -22,7 +22,7 @@ const CurrencyRates = () => {
 
     const [currencies, setCurrencies] = useState({});
     const [currenciesNames, setCurrenciesNames] = useState([]);
-    const [selectedCurrency, setSelectedCurrency] = React.useState();
+    const [selectedCurrency, setSelectedCurrency] = React.useState('');
     const [rows, setRows] = useState([]);
 
     const handleChange = (event) => {

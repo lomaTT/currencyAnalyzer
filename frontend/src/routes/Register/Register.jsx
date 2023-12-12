@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Step, StepLabel, Stepper, TextField} from "@mui/material";
+import {TextField} from "@mui/material";
 import "./Register.css"
 import Button from "@mui/material/Button";
 import axios from "axios";
@@ -7,23 +7,25 @@ import axios from "axios";
 const steps = ['Input your name and surname', 'Input your credentials and date of birth']
 
 const Register = () => {
+
     const [data, setData] = useState({
         username: '',
         email: '',
         password: '',
     });
 
+    const [status, setStatus] = useState(0);
+
     const handleSetData = (e) => {
-        setData((prevData) => ({ ...prevData, [e.target.id]: e.target.value }));
+        setData((prevData) => ({...prevData, [e.target.id]: e.target.value}));
     }
 
     const handleRegister = async () => {
         await axios.post('http://localhost:8080/api/auth/signup', data)
             .then((response) => {
-                console.log(response);
+                setStatus(response.status);
             })
     }
-
 
     return (
         <div className={"register-class"}>
@@ -57,6 +59,7 @@ const Register = () => {
                     // error
                     // helperText="Incorrect entry."
                 />
+
             </div>
 
             <div className="controls">
@@ -69,7 +72,6 @@ const Register = () => {
                     Register
                 </Button>
             </div>
-
         </div>
     );
 };
