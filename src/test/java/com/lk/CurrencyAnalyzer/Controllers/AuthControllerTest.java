@@ -1,26 +1,18 @@
 package com.lk.CurrencyAnalyzer.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lk.CurrencyAnalyzer.Models.User;
 import com.lk.CurrencyAnalyzer.Payload.Request.SignupRequest;
 import com.lk.CurrencyAnalyzer.Payload.Response.MessageResponse;
 import com.lk.CurrencyAnalyzer.services.AuthService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
