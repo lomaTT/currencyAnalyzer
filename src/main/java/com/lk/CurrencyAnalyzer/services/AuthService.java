@@ -1,4 +1,4 @@
-package com.lk.CurrencyAnalyzer.Services;
+package com.lk.CurrencyAnalyzer.services;
 
 import com.lk.CurrencyAnalyzer.Payload.Request.LoginRequest;
 import com.lk.CurrencyAnalyzer.Payload.Request.SignupRequest;

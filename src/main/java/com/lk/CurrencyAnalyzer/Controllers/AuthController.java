@@ -4,7 +4,7 @@ import com.lk.CurrencyAnalyzer.Payload.Request.LoginRequest;
 import com.lk.CurrencyAnalyzer.Payload.Request.SignupRequest;
 import com.lk.CurrencyAnalyzer.Payload.Response.MessageResponse;
 import com.lk.CurrencyAnalyzer.Payload.Response.UserInfoResponse;
-import com.lk.CurrencyAnalyzer.Services.AuthService;
+import com.lk.CurrencyAnalyzer.services.AuthService;
 import com.lk.CurrencyAnalyzer.services.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

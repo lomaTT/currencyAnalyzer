@@ -1,6 +1,7 @@
 package com.lk.CurrencyAnalyzer.models;
 
-import com.lk.CurrencyAnalyzer.enums.ECurrency;
+import com.lk.CurrencyAnalyzer.Enums.ECurrency;
+import com.lk.CurrencyAnalyzer.Models.Currency;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;

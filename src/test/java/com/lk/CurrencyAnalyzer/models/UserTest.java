@@ -1,5 +1,7 @@
 package com.lk.CurrencyAnalyzer.models;
 
+import com.lk.CurrencyAnalyzer.Models.Role;
+import com.lk.CurrencyAnalyzer.Models.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

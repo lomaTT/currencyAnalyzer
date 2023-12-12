@@ -9,7 +9,7 @@ import com.lk.CurrencyAnalyzer.Payload.Response.MessageResponse;
 import com.lk.CurrencyAnalyzer.Repositories.RoleRepository;
 import com.lk.CurrencyAnalyzer.Repositories.UserRepository;
 import com.lk.CurrencyAnalyzer.Security.jwt.JwtUtils;
-import com.lk.CurrencyAnalyzer.Services.AuthService;
+import com.lk.CurrencyAnalyzer.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
