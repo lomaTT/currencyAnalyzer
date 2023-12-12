@@ -21,14 +21,11 @@ public class CurrencyTest {
 
     @Test
     public void givenCurrency_whenSetCurrency_thenGetCurrencyShouldReturnSameCurrency() {
-        // Given
         ECurrency expectedCurrency = ECurrency.CURRENCY_USD;
 
-        // When
         currency.setCurrency(expectedCurrency);
         ECurrency retrievedCurrency = currency.getCurrencyName();
 
-        // Then
         assertEquals(expectedCurrency, retrievedCurrency);
     }
 }

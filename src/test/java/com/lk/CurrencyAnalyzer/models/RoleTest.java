@@ -22,25 +22,19 @@ public class RoleTest {
 
     @Test
     public void givenRole_whenSetRole_thenGetRoleShouldReturnSameRole() {
-        // Given
         role.setRole(ERole.ROLE_ADMIN);
 
-        // When
         ERole retrievedRole = role.getRole();
 
-        // Then
         assertEquals(ERole.ROLE_ADMIN, retrievedRole);
     }
 
     @Test
     public void givenId_whenSetId_thenGetIdShouldReturnSameId() {
-        // Given
         Long id = 1L;
 
-        // When
         role.setId(id);
 
-        // Then
         assertEquals(id, role.getId());
     }
 }
