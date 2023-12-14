@@ -110,7 +110,7 @@ const AddCurrency = () => {
                     </div>
 
                     <div className="add-button">
-                        <Button color="info" disabled={error === true || success === true}
+                        <Button color="info" disabled={error === true || success === true || currency === '' || value <= 0}
                                 onClick={() => handleAddCurrency()}
                         >
                             Add

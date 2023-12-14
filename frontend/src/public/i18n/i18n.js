@@ -19,7 +19,7 @@ i18n
                     OPERATION_ADD: "Added (manually)",
                     OPERATION_DELETE: "Deleted (manually)",
                     "currency-rates": "Currency rates",
-
+                    OPERATION_CONVERT: "Konwertacja",
                 }
             },
             pl: {
