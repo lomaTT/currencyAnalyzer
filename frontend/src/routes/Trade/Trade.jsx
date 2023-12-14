@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import './Trade.css';
-import {FormControl, InputLabel, Select, TextField} from "@mui/material";
+import {Alert, FormControl, InputLabel, Select, TextField} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import {t} from "i18next";
 import Button from "@mui/material/Button";
+import {useNavigate} from "react-router-dom";
+import {useTimeout} from "@mui/x-data-grid/internals";
 
 const Trade = () => {
 
@@ -15,6 +17,11 @@ const Trade = () => {
     const [wantedCurrency, setWantedCurrency] = useState('');
     const [listOfCurrencies, setListOfCurrencies] = useState([]);
     const [currencyValue, setCurrencyValue] = useState(0);
+
+    const [error, setError] = useState(false);
+    const [success, setSuccess] = useState(false);
+
+    const navigate = useNavigate();
 
     const [selectedCurrencyRateResponse, setSelectedCurrencyRateResponse] = useState(0);
 
@@ -29,7 +36,6 @@ const Trade = () => {
             withCredentials: true,
         })).data;
 
-        // console.log(response);
         setSelectedCurrencyRateResponse(response[currencyCodeWantedCurrency]);
     }
 
@@ -78,7 +84,6 @@ const Trade = () => {
     }, [rerender]);
 
     const handleTrade = () => {
-        console.log(wantedCurrency, existingCurrency);
         axios.post('http://localhost:8080/api/currency/trade-currency', {
             wantedCurrency: wantedCurrency,
             existingCurrency: existingCurrency,
@@ -87,8 +92,20 @@ const Trade = () => {
         }, {
             withCredentials: true,
         })
-            .then(response => console.log(response))
-            .catch(error => console.log(error));
+            .then(response => {
+                setSuccess(true);
+                setTimeout(() => {
+                    setSuccess(false);
+                    navigate('/dashboard');
+                }, 5000);
+            })
+            .catch(error => {
+                setError(true);
+                setTimeout(() => {
+                    setError(false);
+                    navigate('/dashboard');
+                }, 5000);
+            });
     }
 
     return (
@@ -154,9 +171,12 @@ const Trade = () => {
                     (<div></div>) :
                     (<div className="bottom-container">
                         Current rate: 1 {t(existingCurrency)} = {selectedCurrencyRateResponse.toFixed(2)} {t(wantedCurrency)}
-                        <Button onClick={handleTrade}>Trade?</Button>
+                        <Button disabled={error === true || success === true} onClick={handleTrade}>Trade?</Button>
                     </div>)}
+                {error === true ? (<Alert severity="error">Something went wrong. Redirecting....</Alert>) : (<div></div>)}
+                {success === true ? (<Alert severity="success">You successfully traded currency. Redirecting....</Alert>) : (<div></div>)}
             </div>
+
 
         </div>
     );

@@ -62,6 +62,7 @@ const Login = ({}) => {
                 <TextField
                     id="password"
                     label="Password"
+                    type="password"
                     variant={"standard"}
                     value={data.password}
                     onChange={handleSetData}

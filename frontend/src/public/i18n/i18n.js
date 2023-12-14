@@ -18,6 +18,7 @@ i18n
                     CURRENCY_RUB: "Russian ruble",
                     OPERATION_ADD: "Added (manually)",
                     OPERATION_DELETE: "Deleted (manually)",
+                    "currency-rates": "Currency rates",
 
                 }
             },

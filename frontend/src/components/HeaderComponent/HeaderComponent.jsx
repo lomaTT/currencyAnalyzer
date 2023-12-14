@@ -17,8 +17,9 @@ import theme from "../../public/help-js/palette";
 import {ThemeProvider} from "@mui/material/styles";
 import {Link, useLocation} from "react-router-dom";
 import {useAuth} from "../../providers/auth-provider";
+import {t} from "i18next";
 
-const pages = ['currency-rates', '2', '3'];
+const pages = ['currency-rates'];
 
 
 const HeaderComponent = ({}) => {
@@ -68,7 +69,7 @@ const HeaderComponent = ({}) => {
                                 variant="h6"
                                 noWrap
                                 component="a"
-                                href="#app-bar-with-responsive-menu"
+                                href="/"
                                 sx={{
                                     mr: 2,
                                     display: {xs: 'none', md: 'flex'},
@@ -114,7 +115,7 @@ const HeaderComponent = ({}) => {
                                 >
                                     {pages.map((page) => (
                                         <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                            <Typography textAlign="center">{page}</Typography>
+                                            <Typography textAlign="center">{t(page)}</Typography>
                                         </MenuItem>
                                     ))}
                                 </Menu>
@@ -124,7 +125,7 @@ const HeaderComponent = ({}) => {
                                 variant="h5"
                                 noWrap
                                 component="a"
-                                href="#app-bar-with-responsive-menu"
+                                href="/"
                                 sx={{
                                     mr: 2,
                                     display: {xs: 'flex', md: 'none'},
@@ -147,7 +148,7 @@ const HeaderComponent = ({}) => {
                                         onClick={handleCloseNavMenu}
                                         sx={{my: 2, color: 'white', display: 'block'}}
                                     >
-                                        {page}
+                                        {t(page)}
                                     </Button>
                                 ))}
                             </Box>

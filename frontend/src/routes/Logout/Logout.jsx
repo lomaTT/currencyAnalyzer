@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {useAuth} from "../../providers/auth-provider";
 import {redirect, useNavigate} from "react-router-dom";
+import './Logout.css';
 
 const Logout = () => {
     const { userLogout } = useAuth();
@@ -15,8 +16,8 @@ const Logout = () => {
 
 
     return (
-        <div>
-            You successfully logged out! Redirecting...
+        <div className="main-div">
+            <div>You successfully logged out! Redirecting...</div>
         </div>
     );
 };

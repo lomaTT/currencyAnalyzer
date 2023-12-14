@@ -2,11 +2,13 @@ import React, {useEffect, useState} from 'react';
 import RedirectProvider from "../../providers/redirect-provider";
 import axios from "axios";
 import Box from "@mui/material/Box";
-import {Button, FilledInput, FormControl, InputAdornment, InputLabel, Select} from "@mui/material";
+import {Alert, Button, FilledInput, FormControl, InputAdornment, InputLabel, Select} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import './AddCurrency.css'
 import DeleteIcon from "@mui/icons-material/Delete";
 import {useTranslation} from "react-i18next";
+import {useAuth} from "../../providers/auth-provider";
+import {useNavigate} from "react-router-dom";
 
 
 const currenciesMap = {
@@ -20,12 +22,16 @@ const currenciesMap = {
 }
 
 const AddCurrency = () => {
-    const { t, i18n } = useTranslation();
+    const {t, i18n} = useTranslation();
 
+    const Auth = useAuth();
+    const navigate = useNavigate();
 
     const [currenciesList, setCurrenciesList] = useState([])
     const [currency, setCurrency] = useState('');
     const [value, setValue] = useState(0);
+    const [error, setError] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:8080/api/currency/get-list-of-currencies', {
@@ -46,7 +52,6 @@ const AddCurrency = () => {
     }
 
     const handleAddCurrency = () => {
-        console.log(currency, value);
         if (currency === '' || value.toString() === '') {
             return;
         }
@@ -54,10 +59,23 @@ const AddCurrency = () => {
         axios.post('http://localhost:8080/api/currency/add-currency-to-currencies-list', {
                 "currency_id": currency,
                 "value": value,
-            }, { withCredentials: true, }
+            }, {withCredentials: true,}
         )
-            .then(r => console.log(r))
-            .catch(e => console.log(e));
+            .then(r => {
+                setSuccess(true);
+                setTimeout(() => {
+                    setSuccess(false);
+                    navigate('/dashboard');
+                }, 5000);
+            })
+            .catch(e => {
+                setError(true);
+                setTimeout(() => {
+                    Auth.userLogout();
+                    setError(false);
+                    navigate('/');
+                }, 5000);
+            });
     }
 
     return (
@@ -92,13 +110,16 @@ const AddCurrency = () => {
                     </div>
 
                     <div className="add-button">
-                        <Button color="info"
-                                // startIcon={<DeleteIcon/>}
+                        <Button color="info" disabled={error === true || success === true}
                                 onClick={() => handleAddCurrency()}
                         >
                             Add
                         </Button>
+
+                        {(error === true) ? (<Alert severity="error">Something went wrong. Redirecting....</Alert>) : (<></>)}
+                        {(success === true) ? (<Alert severity="success">You successfully added currency. Redirecting....</Alert>) : (<></>)}
                     </div>
+
                 </Box>
             </div>
         </div>

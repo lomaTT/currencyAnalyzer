@@ -52,41 +52,34 @@ const columns = [
         sortable: false,
         width: 200,
         valueGetter: (params) => `${t(params.row.currency.currency) || ''}`,
-        // valueGetter: (params) =>
-        //     `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     },
 ];
 
 const Profile = () => {
     const Auth = useAuth();
-
     const [transactions, setTransactions] = useState([]);
-    const [rows, setRows] = useState([]);
-    
+
     useEffect(() => {
         axios.get('http://localhost:8080/api/currency/get-last-user-transactions', {
             withCredentials: true,
         })
             .then(response =>  {
                 setTransactions(response.data);
-                // console.log(response.data);
             })
             .catch(error => console.log(error));
     }, []);
 
-    // console.log(rows);
 
     return (
         <div>
             <RedirectProvider />
             <div className="main-description">
-                Your profile
                 <div>
                     <Button variant="contained" component={Link} to={"/profile/add-currency"}>Add currency</Button>
                 </div>
-
                 <div className="last-transactions-table">
                     <h2>Your last transactions</h2>
+
                     <Box sx={{ height: 400, width: '80%', margin: '0 auto' }}>
                         <DataGrid
                             rows={transactions}
